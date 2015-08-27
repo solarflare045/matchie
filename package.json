@@ -1,0 +1,27 @@
+{
+  "name": "matchie",
+  "version": "1.0.0",
+  "description": "Deep JavaScript object comparison library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solarflare045/matchie.git"
+  },
+  "author": "Max Sorensen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/solarflare045/matchie/issues"
+  },
+  "homepage": "https://github.com/solarflare045/matchie",
+  "dependencies": {
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "sinon": "^1.16.1",
+    "sinon-chai": "^2.8.0"
+  }
+}
