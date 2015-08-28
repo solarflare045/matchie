@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var chai = require('chai');
 chai.use(require('sinon-chai'));
 
-var matchie = require('../index');
+var matchie = require('../matchie');
 var expect = chai.expect;
 
 describe('matchie()', function() {
