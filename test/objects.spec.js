@@ -161,11 +161,19 @@ describe('matchie()', function() {
   });
 
   describe('.hasProperty()', function() {
+    var hasLengthTwo = matchie.hasProperty('length', 2);
     it('should return TRUE if the provided object has a property with that value', function() {
-      var hasLengthTwo = matchie.hasProperty('length', 2);
       expect(matchie({length: 2, height: 3}, hasLengthTwo)).to.equal(true);
       expect(matchie({health: 100, mana: 75}, hasLengthTwo)).to.equal(false);
       expect(matchie([1, 2], hasLengthTwo)).to.equal(true);
+    });
+
+    it('should handle comparing NULL safely', function() {
+      expect(matchie(null, hasLengthTwo)).to.equal(false);
+    });
+
+    it('should handle comparing UNDEFINED safely', function() {
+      expect(matchie(undefined, hasLengthTwo)).to.equal(false);
     });
   });
 });

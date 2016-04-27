@@ -91,7 +91,7 @@ function matchie(a, b) {
   return false;
 }
 
-matchie.and = function() {
+matchie.and = matchie.all = function() {
   var args = arguments;
   return function(val) {
     return _.all(args, function(arg) {
@@ -131,9 +131,9 @@ matchie.gte = function(num) {
 };
 
 matchie.hasProperty = function(key, value) {
-  var obj = {};
-  obj[key] = value;
-  return matchie.partial(obj);
+  return function(val) {
+    return !_.isUndefined(val) && !_.isNull(val) && matchie(val[key], value);
+  };
 };
 
 matchie.in = function(arr) {
@@ -162,6 +162,15 @@ matchie.lte = function(num) {
 
 matchie.maybe = function(val) {
   return matchie.or(matchie.is.undefined, val);
+};
+
+matchie.none = function() {
+  var args = arguments;
+  return function(val) {
+    return !_.any(args, function(arg) {
+      return matchie(val, arg);
+    });
+  };
 };
 
 matchie.not = function(pre) {
@@ -213,6 +222,19 @@ matchie.unordered = function(obj) {
       return arrayMatchUnderordered(val, obj);
 
     return false;
+  };
+};
+
+matchie.xor = matchie.one = matchie.single = function() {
+  var args = arguments;
+  return function(val) {
+    var count = 0;
+    _.each(args, function(arg) {
+      if (matchie(val, arg))
+        count++;
+      return count < 2;
+    });
+    return count === 1;
   };
 };
 
