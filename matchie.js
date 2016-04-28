@@ -91,73 +91,93 @@ function matchie(a, b) {
   return false;
 }
 
+function buildCallback(name, args, func) {
+  return _.extend(func, {
+    path: name,
+    args: args
+  });
+}
+
+function buildUnsharableCallback(func) {
+  return _.extend(func, {
+    unsharable: true
+  });
+}
+
+function buildLodash(name, func) {
+  return _.extend(func, {
+    path: 'is.' + name,
+    args: null
+  });
+}
+
 matchie.and = matchie.all = function() {
   var args = arguments;
-  return function(val) {
+  return buildCallback('and', arguments, function(val) {
     return _.all(args, function(arg) {
       return matchie(val, arg);
     });
-  };
+  });
 };
 
 matchie.between = function(a, b) {
-  return function(val) {
+  return buildCallback('between', arguments, function(val) {
     return val >= a && val < b;
-  };
+  });
 };
 
 matchie.contains = function(str) {
-  return function(val) {
+  return buildCallback('contains', arguments, function(val) {
     return _.contains(val, str);
-  };
+  });
 };
 
 matchie.equals = function(obj) {
-  return function(val) {
+  return buildCallback('equals', arguments, function(val) {
     return val == obj;
-  };
+  });
 };
 
 matchie.gt = function(num) {
-  return function(val) {
+  return buildCallback('gt', arguments, function(val) {
     return val > num;
-  };
+  });
 };
 
 matchie.gte = function(num) {
-  return function(val) {
+  return buildCallback('gte', arguments, function(val) {
     return val >= num;
-  };
+  });
 };
 
 matchie.hasProperty = function(key, value) {
-  return function(val) {
+  return buildCallback('hasProperty', arguments, function(val) {
     return !_.isUndefined(val) && !_.isNull(val) && matchie(val[key], value);
-  };
+  });
 };
 
 matchie.in = function(arr) {
-  return function(val) {
+  return buildCallback('in', arguments, function(val) {
     return _.contains(arr, val);
-  };
+  });
 };
 
 matchie.instanceOf = function(cls) {
-  return function(val) {
+  return buildCallback('instanceOf', arguments, function(val) {
     return val instanceof cls;
-  };
+  });
 };
 
 matchie.lt = function(num) {
-  return function(val) {
+  return buildCallback('lt', arguments, function(val) {
     return val < num;
-  };
+  });
 };
 
 matchie.lte = function(num) {
-  return function(val) {
+  return buildCallback('lte', arguments, function(val) {
     return val <= num;
-  };
+  });
 };
 
 matchie.maybe = function(val) {
@@ -166,34 +186,34 @@ matchie.maybe = function(val) {
 
 matchie.none = function() {
   var args = arguments;
-  return function(val) {
+  return buildCallback('none', arguments, function(val) {
     return !_.any(args, function(arg) {
       return matchie(val, arg);
     });
-  };
+  });
 };
 
 matchie.not = function(pre) {
-  return function(val) {
+  return buildCallback('not', arguments, function(val) {
     return !matchie(val, pre);
-  };
+  });
 };
 
 matchie.or = function() {
   var args = arguments;
-  return function(val) {
+  return buildCallback('or', arguments, function(val) {
     return _.any(args, function(arg) {
       return matchie(val, arg);
     });
-  };
+  });
 };
 
 matchie.outside = function(a, b) {
   return matchie.not(matchie.between(a, b));
 };
 
-matchie.partial = matchie.has = function(obj) {
-  return function(val) {
+matchie.partial = matchie.has = function _partial_(obj) {
+  return buildCallback('partial', arguments, function(val) {
     if (_.isArray(obj) && _.isArray(val))
       return arrayMatchPartial(val, obj);
 
@@ -201,33 +221,33 @@ matchie.partial = matchie.has = function(obj) {
       return objectMatchPartial(val, obj);
 
     return false;
-  };
+  });
 };
 
 matchie.same = function(obj) {
-  return function(val) {
+  return buildCallback('same', arguments, function(val) {
     return obj === val; // For reference checking.
-  };
+  });
 };
 
 matchie.typeOf = function(type) {
-  return function(val) {
+  return buildUnsharableCallback(function(val) {
     return typeof val === type;
-  };
+  });
 };
 
 matchie.unordered = function(obj) {
-  return function(val) {
+  return buildCallback('unordered', arguments, function(val) {
     if (_.isArray(obj) && _.isArray(val))
       return arrayMatchUnderordered(val, obj);
 
     return false;
-  };
+  });
 };
 
-matchie.xor = matchie.one = matchie.single = function() {
+matchie.xor = matchie.one = matchie.single = function _xor_() {
   var args = arguments;
-  return function(val) {
+  return buildCallback('xor', arguments, function(val) {
     var count = 0;
     _.each(args, function(arg) {
       if (matchie(val, arg))
@@ -235,30 +255,31 @@ matchie.xor = matchie.one = matchie.single = function() {
       return count < 2;
     });
     return count === 1;
-  };
+  });
 };
 
 matchie.is = {
-  array: _.isArray,
-  boolean: _.isBoolean,
-  date: _.isDate,
-  element: _.isElement,
-  empty: _.isEmpty,
-  equal: _.isEqual,
-  error: _.isError,
-  finite: _.isFinite,
-  function: _.isFunction,
-  match: _.isMatch,
-  nan: _.isNaN,
-  native: _.isNative,
-  null: _.isNull,
-  number: _.isNumber,
-  object: _.isObject,
-  plainObject: _.isPlainObject,
-  regExp: _.isRegExp,
-  string: _.isString,
-  typedArray: _.isTypedArray,
-  undefined: _.isUndefined,
+  array: buildLodash('array', _.isArray),
+  boolean: buildLodash('boolean', _.isBoolean),
+  date: buildLodash('date', _.isDate),
+  element: buildLodash('element', _.isElement),
+  empty: buildLodash('empty', _.isEmpty),
+  equal: buildLodash('equal', _.isEqual),
+  error: buildLodash('error', _.isError),
+  finite: buildLodash('finite', _.isFinite),
+  function: buildLodash('function', _.isFunction),
+  match: buildLodash('match', _.isMatch),
+  nan: buildLodash('nan',  _.isNaN),
+  native: buildLodash('native', _.isNative),
+  null: buildLodash('null', _.isNull),
+  number: buildLodash('number', _.isNumber),
+  object: buildLodash('object', _.isObject),
+  plainObject: buildLodash('plainObject', _.isPlainObject),
+  regExp: buildLodash('regExp', _.isRegExp),
+  string: buildLodash('string', _.isString),
+  typedArray: buildLodash('typedArray', _.isTypedArray),
+  undefined: buildLodash('undefined', _.isUndefined),
 };
 
 module.exports = matchie;
+require('./transfer.js')(matchie);
