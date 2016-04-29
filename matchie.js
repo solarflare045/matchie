@@ -128,7 +128,13 @@ matchie.between = function(a, b) {
 
 matchie.contains = function(str) {
   return buildCallback('contains', arguments, function(val) {
-    return _.contains(val, str);
+    if (_.isString(val) && _.isString(str)) {
+      return val.indexOf(str) >= 0;
+    }
+    if (_.isArray(val)) {
+      return arrayMatchPartial(val, [str]);
+    }
+    return false;
   });
 };
 
@@ -158,7 +164,7 @@ matchie.hasProperty = function(key, value) {
 
 matchie.in = function(arr) {
   return buildCallback('in', arguments, function(val) {
-    return _.contains(arr, val);
+    return arrayMatchPartial(arr, [val]);
   });
 };
 
