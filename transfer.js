@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var pjson = require('./package.json');
 
 module.exports = function(matchie) {
   matchie.serialize = function(obj) {
@@ -31,7 +32,10 @@ module.exports = function(matchie) {
       }
     }
 
-    return JSON.stringify(_serialize_(obj));
+    return JSON.stringify({
+      v: pjson.version,
+      o: _serialize_(obj)
+    });
   };
 
   matchie.deserialize = function(str) {
@@ -59,6 +63,7 @@ module.exports = function(matchie) {
       }
     }
 
-    return _deserialize_(JSON.parse(str));
+    var obj = JSON.parse(str);
+    return _deserialize_(obj.o);
   };
 };
