@@ -77,16 +77,16 @@ function matchie(a, b) {
     return a === b;
 
   if (_.isFunction(b))
-    return b(a);
+    return !!b(a);
 
   if (_.isRegExp(b))
-    return isDirectlyComparible(a) && a.toString().match(b);
+    return isDirectlyComparible(a) && !!a.toString().match(b);
 
   if (_.isObject(a) && _.isObject(b))
-    return objectMatch(a, b);
+    return !!objectMatch(a, b);
 
   if (_.isArray(a) && _.isArray(b))
-    return arrayMatch(a, b);
+    return !!arrayMatch(a, b);
 
   return false;
 }
@@ -218,7 +218,7 @@ matchie.outside = function(a, b) {
   return matchie.not(matchie.between(a, b));
 };
 
-matchie.partial = matchie.has = function _partial_(obj) {
+matchie.partial = matchie.has = function(obj) {
   return buildCallback('partial', arguments, function(val) {
     if (_.isArray(obj) && _.isArray(val))
       return arrayMatchPartial(val, obj);
@@ -237,7 +237,7 @@ matchie.same = function(obj) {
 };
 
 matchie.typeOf = function(type) {
-  return buildUnsharableCallback(function(val) {
+  return buildCallback('typeOf', arguments, function(val) {
     return typeof val === type;
   });
 };
@@ -251,7 +251,7 @@ matchie.unordered = function(obj) {
   });
 };
 
-matchie.xor = matchie.one = matchie.single = function _xor_() {
+matchie.xor = matchie.one = matchie.single = function() {
   var args = arguments;
   return buildCallback('xor', arguments, function(val) {
     var count = 0;
