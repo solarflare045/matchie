@@ -4,7 +4,7 @@
   "description": "Deep JavaScript object comparison library.",
   "main": "matchie.js",
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
+    "mocha": "^2.4.5",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0"
   }
