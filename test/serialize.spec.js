@@ -16,7 +16,7 @@ describe('matchie()', function() {
       var serialized = matchie.serialize(base);
       var match = matchie.deserialize(serialized);
 
-      expect(JSON.parse(serialized)).to.deep.equal({
+      expect(JSON.parse(serialized).o).to.deep.equal({
         type: 'function',
         path: 'or',
         arguments: [
