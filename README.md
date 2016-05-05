@@ -121,7 +121,7 @@ Otherwise, this will return false.
 `matchie.single(args...)`
 Requires exactly one of the provided arguments to match the value.
 
-## Lodash wrappers
+## Lodash Wrappers
 For the sake of serialization, many of lodash's functions are available through the `matchie.is.???` object.
 
 | Matchie Function        | Lodash Function   |
@@ -146,6 +146,28 @@ For the sake of serialization, many of lodash's functions are available through 
 | `matchie.is.string`     | `_.isString`      |
 | `matchie.is.typedArray` | `_.isTypedArray`  |
 | `matchie.is.undefined`  | `_.isUndefined`   |
+
+## Converter Functions
+Sometimes the value will not be in a sensible format to then compare against your matcher. Converters allow you to convert the input value to a different
+type before performing the matcher comparison.
+
+| Converter Function      | Lodash Equivalent |
+| ----------------------- | ----------------- |
+| `matchie.as.integer`    | `_.toInteger`     |
+| `matchie.as.number`     | `_.toNumber`      |
+| `matchie.as.string`     | `_.toString`      |
+
+There is also `matchie.as.json` which parses the input through `JSON.parse`, and presents an object. If the input string cannot be parsed, this matcher
+will return `false` instead, with no comparisons performed with its value.
+
+#### JSON Input example
+```JavaScript
+var matcher = matchie.as.json(matchie.has({a: 1}));
+
+matchie('{"a": 1, "b": 1}', matcher); // true
+matchie('{"a": 2, "b": 1}', matcher); // false
+matchie('{crazy: value: pair}', matcher); // false
+```
 
 ## Serialization
 If you need to store a matcher object as string, you can use `matchie.serialize(matcher)` and `matchie.deserialize(string)`.

@@ -1,6 +1,6 @@
 {
   "name": "matchie",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Deep JavaScript object comparison library.",
   "main": "matchie.js",
   "scripts": {

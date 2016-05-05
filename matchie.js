@@ -105,6 +105,20 @@ function buildLodash(name, func) {
   });
 }
 
+function buildConvert(name, func) {
+  return function(matcher) {
+    return buildCallback('as.' + name, arguments, function(val) {
+      var converted;
+      try {
+        converted = func(val);
+      } catch (ex) {
+        return false;
+      }
+      return matchie(converted, matcher);
+    });
+  };
+}
+
 matchie.and = matchie.all = function() {
   var args = arguments;
   return buildCallback('and', arguments, function(val) {
@@ -284,5 +298,12 @@ matchie.is = {
   undefined: buildLodash('undefined', _.isUndefined),
 };
 
-module.exports = matchie;
+matchie.as = {
+  integer: buildConvert('integer', _.toInteger),
+  json: buildConvert('json', function(i) { return JSON.parse(i); }),
+  number: buildConvert('number', _.toNumber),
+  string: buildConvert('string', _.toString)
+};
+
 require('./transfer.js')(matchie);
+module.exports = matchie;

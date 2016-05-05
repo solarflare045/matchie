@@ -13,7 +13,7 @@ describe('matchie()', function() {
         matchie.between(1, 3),
         matchie.between(6, 8),
         matchie.in([4, {
-          a: matchie.is.integer
+          a: matchie.as.integer(matchie.equals(3))
         }]),
         matchie.contains(matchie.is.string)
       );
@@ -41,7 +41,12 @@ describe('matchie()', function() {
               value: {
                 a: {
                   type: 'function',
-                  path: 'is.integer',
+                  path: 'as.integer',
+                  arguments: [{
+                    path: 'equals',
+                    type: 'function',
+                    arguments: [3]
+                  }]
                 }
               }
             }]
@@ -65,8 +70,8 @@ describe('matchie()', function() {
       expect(matchie(7, match)).to.equal(true);
       expect(matchie(8, match)).to.equal(false);
 
-      expect(matchie(_.set({}, 'a', 3), match)).to.equal(true);
-      expect(matchie(_.set({}, 'a', 3.5), match)).to.equal(false);
+      expect(matchie(_.set({}, 'a', 3.2), match)).to.equal(true);
+      expect(matchie(_.set({}, 'a', 4.2), match)).to.equal(false);
 
       expect(matchie([111], match)).to.equal(false);
       expect(matchie(['abc'], match)).to.equal(true);
@@ -96,11 +101,35 @@ describe('matchie()', function() {
 
     it('should not deserialize anything that contains a later major version', function() {
       var str = JSON.stringify({
-        v: '2.0.0',
+        v: '102453.0.0',
         o: {}
       });
 
-      expect(matchie.deserialize.bind(matchie, str)).to.throw(/later version/);
+      expect(matchie.deserialize.bind(matchie, str)).to.throw(/unsupported version/);
+    });
+
+    it('should not deserialize anything that contains a function path that does not exist', function() {
+      var str = JSON.stringify({
+        v: '1.0.0',
+        o: {
+          type: 'function',
+          path: 'toString'
+        }
+      });
+
+      expect(matchie.deserialize.bind(matchie, str)).to.throw(/does not exist/);
+    });
+
+    it('should not deserialize anything that contains a function path that does not resolve to a function', function() {
+      var str = JSON.stringify({
+        v: '1.0.0',
+        o: {
+          type: 'function',
+          path: 'is'
+        }
+      });
+
+      expect(matchie.deserialize.bind(matchie, str)).to.throw(/not a function/);
     });
   });
 });
