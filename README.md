@@ -5,7 +5,7 @@ Deep JavaScript object comparison library.
 
 ## Installation
 ```bash
-npm install https://github.com/solarflare045/matchie.git
+npm install matchie
 ```
 
 ## Basic Usage
@@ -16,6 +16,16 @@ var same = matchie(value, matcher);
 ```
 This will do a deep comparison of the value against the matcher. The matcher can be a simple value, or an object with utility functions as listed below.
 
+#### Deep Object Comparison
+```JavaScript
+var matcher = { a: 1, b: 1 };
+
+matchie({a: 1}, matcher); // false
+matchie({a: 1, b: 1}, matcher); // true
+matchie({a: 1, b: 1, c: 1}, matcher); // false
+```
+
+#### Utility Function Usage
 ```JavaScript
 var matcher = matchie.or(matchie.between(5, 10), 15);
 
@@ -23,6 +33,16 @@ matchie(0, matcher); // false
 matchie(5, matcher); // true
 matchie(10, matcher); // false
 matchie(15, matcher); // true
+```
+
+#### Deep Object Comparison with Utility Functions
+```JavaScript
+var matcher = { a: matchie.unordered([ matchie.is.string, matchie.is.number ]) };
+
+matchie({ a: ['string', 5] }, matcher); // true
+matchie({ a: [5, 'string'] }, matcher); // true
+matchie({ a: ['string', 5, 5] }, matcher); // false
+matchie({ b: ['string', 5] }, matcher); // false
 ```
 
 ## Utility Functions
