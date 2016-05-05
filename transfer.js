@@ -1,13 +1,15 @@
 var _ = require('lodash');
-var pjson = require('./package.json');
 var semver = require('semver');
+
+var CURRENT_SERIALIZATION_VERSION = '2.0.0';
+var SAFE_SERIALIZATION_MASK = '<3.0.0';
 
 module.exports = function(matchie) {
   matchie.serialize = function(obj) {
     function _serialize_(obj) {
       if (matchie.is.function(obj)) {
         if (!obj.path) {
-          throw new Error('Cannot serialize as it contains an unsafe function!');
+          throw new Error('Cannot serialize as it contains an unsafe function.');
         }
         return {
           type: 'function',
@@ -34,7 +36,7 @@ module.exports = function(matchie) {
     }
 
     return JSON.stringify({
-      v: pjson.version,
+      v: CURRENT_SERIALIZATION_VERSION,
       o: _serialize_(obj)
     });
   };
@@ -51,11 +53,16 @@ module.exports = function(matchie) {
         return _.map(obj.value, _deserialize_);
 
       } else if (obj.type === 'function') {
-        var func = _.get(matchie, obj.path);
+        if (!_.has(matchie, obj.path))
+          throw new Error('The function path ' + obj.path + ' does not exist.');
 
-        if (!obj.arguments) {
+        var func = _.get(matchie, obj.path);
+        if (!_.isFunction(func))
+          throw new Error('The function path ' + obj.path + ' is not a function.');
+
+        if (!obj.arguments)
           return func;
-        }
+
         return func.apply(undefined, _.map(obj.arguments, _deserialize_));
 
       } else {
@@ -66,8 +73,8 @@ module.exports = function(matchie) {
 
     var obj = JSON.parse(str);
 
-    if (!semver.satisfies(obj.v, '^1.0.0')) {
-      throw new Error('Matchie object serialized with a significantly later version!');
+    if (!semver.satisfies(obj.v, SAFE_SERIALIZATION_MASK)) {
+      throw new Error('Matchie object serialized with an unsupported version.');
     }
     return _deserialize_(obj.o);
   };
