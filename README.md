@@ -103,26 +103,29 @@ Requires exactly one of the provided arguments to match the value.
 
 ## Lodash wrappers
 For the sake of serialization, many of lodash's functions are available through the `matchie.is.???` object.
-- `matchie.is.array` -> `_.isArray`
-- `matchie.is.boolean` -> `_.isBoolean`
-- `matchie.is.date` -> `_.isDate`
-- `matchie.is.element` -> `_.isElement`
-- `matchie.is.empty` -> `_.isEmpty`
-- `matchie.is.equal` -> `_.isEqual`
-- `matchie.is.error` -> `_.isError`
-- `matchie.is.finite` -> `_.isFinite`
-- `matchie.is.function` -> `_.isFunction`
-- `matchie.is.match` -> `_.isMatch`
-- `matchie.is.nan` -> `_.isNaN`
-- `matchie.is.native` -> `_.isNative`
-- `matchie.is.null` -> `_.isNull`
-- `matchie.is.number` -> `_.isNumber`
-- `matchie.is.object` -> `_.isObject`
-- `matchie.is.plainObject` -> `_.isPlainObject`
-- `matchie.is.regExp` -> `_.isRegExp`
-- `matchie.is.string` -> `_.isString`
-- `matchie.is.typedArray` -> `_.isTypedArray`
-- `matchie.is.undefined` -> `_.isUndefined`
+
+| Matchie Function        | Lodash Function   |
+| ----------------------- | ----------------- |
+| `matchie.is.array`      | `_.isArray`       |
+| `matchie.is.boolean`    | `_.isBoolean`     |
+| `matchie.is.date`       | `_.isDate`        |
+| `matchie.is.element`    | `_.isElement`     |
+| `matchie.is.empty`      | `_.isEmpty`       |
+| `matchie.is.error`      | `_.isError`       |
+| `matchie.is.finite`     | `_.isFinite`      |
+| `matchie.is.function`   | `_.isFunction`    |
+| `matchie.is.integer`    | `_.isInteger`     |
+| `matchie.is.nan`        | `_.isNaN`         |
+| `matchie.is.native`     | `_.isNative`      |
+| `matchie.is.nil`        | `_.isNil`         |
+| `matchie.is.null`       | `_.isNull`        |
+| `matchie.is.number`     | `_.isNumber`      |
+| `matchie.is.object`     | `_.isObject`      |
+| `matchie.is.plainObject`| `_.isPlainObject` |
+| `matchie.is.regExp`     | `_.isRegExp`      |
+| `matchie.is.string`     | `_.isString`      |
+| `matchie.is.typedArray` | `_.isTypedArray`  |
+| `matchie.is.undefined`  | `_.isUndefined`   |
 
 ## Serialization
 If you need to store a matcher object as string, you can use `matchie.serialize(matcher)` and `matchie.deserialize(string)`.

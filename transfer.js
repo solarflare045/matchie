@@ -1,17 +1,18 @@
 var _ = require('lodash');
 var pjson = require('./package.json');
+var semver = require('semver');
 
 module.exports = function(matchie) {
   matchie.serialize = function(obj) {
     function _serialize_(obj) {
       if (matchie.is.function(obj)) {
         if (!obj.path) {
-          throw new Error('Cannot serialize arbitrary functions!');
+          throw new Error('Cannot serialize as it contains an unsafe function!');
         }
         return {
           type: 'function',
           path: obj.path,
-          arguments: _.map(obj.args, _serialize_)
+          arguments: obj.args ? _.map(obj.args, _serialize_) : undefined
         };
 
       } else if (matchie.is.array(obj)) {
@@ -64,6 +65,10 @@ module.exports = function(matchie) {
     }
 
     var obj = JSON.parse(str);
+
+    if (!semver.satisfies(obj.v, '^1.0.0')) {
+      throw new Error('Matchie object serialized with a significantly later version!');
+    }
     return _deserialize_(obj.o);
   };
 };

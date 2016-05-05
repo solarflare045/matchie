@@ -28,6 +28,15 @@ describe('matchie()', function() {
     });
   });
 
+  describe('.equals()', function() {
+    var equals = matchie.equals('0');
+    it('should return whether they weaky equal', function() {
+      expect(equals('0')).to.equal(true);
+      expect(equals(0)).to.equal(true);
+      expect(equals(1)).to.equal(false);
+    });
+  });
+
   describe('.gt()', function() {
     var gt = matchie.gt(8);
     it('should do a greater than comparison', function() {
@@ -95,6 +104,15 @@ describe('matchie()', function() {
       expect(outside(8)).to.equal(false);
       expect(outside(9)).to.equal(true);
       expect(outside(10)).to.equal(true);
+    });
+  });
+
+  describe('.same()', function() {
+    var same = matchie.same('0');
+    it('should return whether they strongly equal', function() {
+      expect(same('0')).to.equal(true);
+      expect(same(0)).to.equal(false);
+      expect(same(1)).to.equal(false);
     });
   });
 

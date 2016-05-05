@@ -70,5 +70,26 @@ describe('matchie()', function() {
       expect(matchie(['Frank', 3, 'Max'], twoStringsAndANumber)).to.equal(true);
       expect(matchie([3, 2, 'String'], twoStringsAndANumber)).to.equal(false);
     });
+
+    it('should return FALSE if either element is an array', function() {
+      expect(matchie.unordered([1, 2])(1)).to.equal(false);
+      expect(matchie.unordered(1)([1, 2])).to.equal(false);
+    });
+  });
+
+  describe('when using .contains()', function() {
+    it('should return TRUE if the input array conatins the provided element', function() {
+      expect(matchie.contains(2)([1, 2])).to.equal(true);
+      expect(matchie.contains(matchie.is.string)(['abc'])).to.equal(true);
+    });
+
+    it('should return FALSE if the input array does not contain the provide element', function() {
+      expect(matchie.contains(3)([1, 2])).to.equal(false);
+      expect(matchie.contains(matchie.is.string)([1])).to.equal(false);
+    });
+
+    it('should return FALSE if the input is not an array', function() {
+      expect(matchie.contains(1)(2)).to.equal(false);
+    });
   });
 });

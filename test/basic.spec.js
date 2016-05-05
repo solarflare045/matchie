@@ -59,4 +59,10 @@ describe('matchie()', function() {
       expect(stub).to.have.been.calledWith(2);
     });
   });
+
+  describe('with an integer and an array', function() {
+    it('should not have any specific comparison available', function() {
+      expect(matchie(5, [5, 0])).to.equal(false);
+    });
+  });
 });

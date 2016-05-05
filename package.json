@@ -4,6 +4,7 @@
   "description": "Deep JavaScript object comparison library.",
   "main": "matchie.js",
   "scripts": {
+    "coverage": "./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
     "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
@@ -17,11 +18,14 @@
   },
   "homepage": "https://github.com/solarflare045/matchie",
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^4.11.2",
+    "semver": "^5.1.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",
+    "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.2.0",
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0"
   }

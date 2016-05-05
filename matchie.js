@@ -12,7 +12,7 @@ function _arrayMatchPartial(a, b, full) {
     return true;
 
   var bFirst = _.first(b);
-  var bRest = _.rest(b);
+  var bRest = _.tail(b);
 
   var aIndexes = _.chain(a)
     .map(function(o, i) {
@@ -24,7 +24,7 @@ function _arrayMatchPartial(a, b, full) {
   if (!aIndexes.length)
     return false;
 
-  return _.any(aIndexes, function(index) {
+  return _.some(aIndexes, function(index) {
     var aWithout = _.filter(a, function(o, i) {
       return i !== index;
     });
@@ -52,24 +52,18 @@ function arrayMatch(a, b) {
 }
 
 function objectMatchPartial(a, b) {
-  var happy = true;
-  _.forOwn(b, function(value, key) {
-    return (happy = !!(happy && matchie(a[key], value)));
+  return _.every(_.keys(b), function(key) {
+    return matchie(a[key], b[key]);
   });
-  return happy;
 }
 
 function objectMatch(a, b) {
   if (!objectMatchPartial(a, b))
     return false;
 
-  var happy = true;
-  _.forOwn(a, function(value, key) {
-    if (_.isUndefined(value))
-      return true;
-    return (happy = !!(happy && !_.isUndefined(b[key])));
+  return _.every(_.keys(a), function(key) {
+    return _.isUndefined(a[key]) || !_.isUndefined(b[key]);
   });
-  return happy;
 }
 
 function matchie(a, b) {
@@ -82,11 +76,11 @@ function matchie(a, b) {
   if (_.isRegExp(b))
     return isDirectlyComparible(a) && !!a.toString().match(b);
 
-  if (_.isObject(a) && _.isObject(b))
-    return !!objectMatch(a, b);
-
   if (_.isArray(a) && _.isArray(b))
     return !!arrayMatch(a, b);
+
+  if (_.isObject(a) && _.isObject(b))
+    return !!objectMatch(a, b);
 
   return false;
 }
@@ -114,7 +108,7 @@ function buildLodash(name, func) {
 matchie.and = matchie.all = function() {
   var args = arguments;
   return buildCallback('and', arguments, function(val) {
-    return _.all(args, function(arg) {
+    return _.every(args, function(arg) {
       return matchie(val, arg);
     });
   });
@@ -130,9 +124,10 @@ matchie.contains = function(str) {
   return buildCallback('contains', arguments, function(val) {
     if (_.isString(val) && _.isString(str)) {
       return val.indexOf(str) >= 0;
-    }
-    if (_.isArray(val)) {
-      return arrayMatchPartial(val, [str]);
+    } else if (_.isArray(val)) {
+      return _.some(val, function(i) {
+        return matchie(i, str);
+      });
     }
     return false;
   });
@@ -164,12 +159,14 @@ matchie.hasProperty = function(key, value) {
 
 matchie.in = function(arr) {
   return buildCallback('in', arguments, function(val) {
-    return arrayMatchPartial(arr, [val]);
+    return _.some(arr, function(i) {
+      return matchie(val, i);
+    });
   });
 };
 
 matchie.instanceOf = function(cls) {
-  return buildCallback('instanceOf', arguments, function(val) {
+  return buildUnsharableCallback(function(val) {
     return val instanceof cls;
   });
 };
@@ -193,7 +190,7 @@ matchie.maybe = function(val) {
 matchie.none = function() {
   var args = arguments;
   return buildCallback('none', arguments, function(val) {
-    return !_.any(args, function(arg) {
+    return !_.some(args, function(arg) {
       return matchie(val, arg);
     });
   });
@@ -208,7 +205,7 @@ matchie.not = function(pre) {
 matchie.or = function() {
   var args = arguments;
   return buildCallback('or', arguments, function(val) {
-    return _.any(args, function(arg) {
+    return _.some(args, function(arg) {
       return matchie(val, arg);
     });
   });
@@ -270,13 +267,13 @@ matchie.is = {
   date: buildLodash('date', _.isDate),
   element: buildLodash('element', _.isElement),
   empty: buildLodash('empty', _.isEmpty),
-  equal: buildLodash('equal', _.isEqual),
   error: buildLodash('error', _.isError),
   finite: buildLodash('finite', _.isFinite),
   function: buildLodash('function', _.isFunction),
-  match: buildLodash('match', _.isMatch),
+  integer: buildLodash('integer', _.isInteger),
   nan: buildLodash('nan',  _.isNaN),
   native: buildLodash('native', _.isNative),
+  nil: buildLodash('nil', _.isNil),
   null: buildLodash('null', _.isNull),
   number: buildLodash('number', _.isNumber),
   object: buildLodash('object', _.isObject),

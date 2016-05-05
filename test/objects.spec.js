@@ -158,6 +158,16 @@ describe('matchie()', function() {
         d: 4
       })).to.equal(true);
     });
+
+    it('should return FALSE if either element is not an object', function(){
+      expect(matchie.partial({
+        a: 1
+      })(1)).to.equal(false);
+
+      expect(matchie.partial(1)({
+        a: 1
+      })).to.equal(false);
+    });
   });
 
   describe('.hasProperty()', function() {
