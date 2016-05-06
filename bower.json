@@ -1,0 +1,21 @@
+{
+  "name": "matchie",
+  "main": "pkg/matchie.min.js",
+  "version": "1.0.2",
+  "homepage": "https://github.com/solarflare045/matchie",
+  "authors": [
+    "Max Sorensen <medal4me2@gmail.com>"
+  ],
+  "description": "Deep JavaScript object comparison library.",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "ISC",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

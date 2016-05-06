@@ -1,11 +1,13 @@
 {
   "name": "matchie",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Deep JavaScript object comparison library.",
   "main": "matchie.js",
   "scripts": {
+    "browserify": "./node_modules/.bin/browserify ./matchie.js -o ./pkg/matchie.js --standalone matchie",
     "coverage": "./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/mocha/bin/mocha",
+    "uglify": "./node_modules/.bin/uglifyjs ./pkg/matchie.js -c -m -o ./pkg/matchie.min.js"
   },
   "repository": {
     "type": "git",
@@ -22,11 +24,13 @@
     "semver": "^5.1.0"
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
     "chai": "^3.2.0",
     "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
     "mocha-lcov-reporter": "^1.2.0",
     "sinon": "^1.16.1",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "uglify-js": "^2.6.2"
   }
 }
