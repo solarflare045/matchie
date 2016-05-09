@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _ = require('./lodash');
 var semver = require('semver');
 
 var CURRENT_SERIALIZATION_VERSION = '2.0.0';

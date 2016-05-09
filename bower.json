@@ -1,7 +1,7 @@
 {
   "name": "matchie",
   "main": "pkg/matchie.min.js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://github.com/solarflare045/matchie",
   "authors": [
     "Max Sorensen <medal4me2@gmail.com>"

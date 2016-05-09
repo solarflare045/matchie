@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _ = require('./lodash');
 
 function isDirectlyComparible(x) {
   return !_.isObject(x) || _.isNull(x) || _.isUndefined(x);
