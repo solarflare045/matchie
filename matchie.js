@@ -44,16 +44,14 @@ function arrayMatch(a, b) {
   if (a.length !== b.length)
     return false;
 
-  for (var i = 0, c = a.length; i < c; i++) {
-    if (!matchie(a[i], b[i]))
-      return false;
-  }
-  return true;
+  return _.every(a, function(v, i) {
+    return matchie(v, b[i]);
+  });
 }
 
 function objectMatchPartial(a, b) {
-  return _.every(_.keys(b), function(key) {
-    return matchie(a[key], b[key]);
+  return _.every(b, function(v, i) {
+    return matchie(a[i], v);
   });
 }
 
@@ -61,8 +59,8 @@ function objectMatch(a, b) {
   if (!objectMatchPartial(a, b))
     return false;
 
-  return _.every(_.keys(a), function(key) {
-    return _.isUndefined(a[key]) || !_.isUndefined(b[key]);
+  return _.every(a, function(v, i) {
+    return _.isUndefined(v) || !_.isUndefined(b[i]);
   });
 }
 
@@ -108,13 +106,8 @@ function buildLodash(name, func) {
 function buildConvert(name, func) {
   return function(matcher) {
     return buildCallback('as.' + name, arguments, function(val) {
-      var converted;
-      try {
-        converted = func(val);
-      } catch (ex) {
-        return false;
-      }
-      return matchie(converted, matcher);
+      var converted = _.attempt(func, val);
+      return !_.isError(converted) && matchie(converted, matcher);
     });
   };
 }
