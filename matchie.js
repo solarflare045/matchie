@@ -77,6 +77,9 @@ function matchie(a, b) {
   if (_.isArray(a) && _.isArray(b))
     return !!arrayMatch(a, b);
 
+  if (_.isDate(a) || _.isDate(b))
+    return _.isDate(a) && _.isDate(b) && a.getTime() === b.getTime();
+
   if (_.isObject(a) && _.isObject(b))
     return !!objectMatch(a, b);
 
