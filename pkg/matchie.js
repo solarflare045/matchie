@@ -197,6 +197,12 @@ matchie.lte = function(num) {
   });
 };
 
+matchie.matches = function(num) {
+  return buildCallback('matches', arguments, function(val) {
+    return matchie(val, num);
+  });
+};
+
 matchie.maybe = function(val) {
   return matchie.or(matchie.is.undefined, val);
 };

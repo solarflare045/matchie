@@ -45,6 +45,23 @@ matchie({ a: ['string', 5, 5] }, matcher); // false
 matchie({ b: ['string', 5] }, matcher); // false
 ```
 
+#### Date Support
+The base matching logic, as well as `between`, `gt`, `gte`, `lt`, `lte`, `outside` will compare the value of the `Date` object.
+However, `equals` and `same` will compare the reference of the `Date` object, and not its value.
+```JavaScript
+var a = new Date('2012-05-01');
+var b = new Date('2013-06-02');
+var c = new Date('2013-06-02');
+
+matchie(a, b); // false
+matchie(b, c); // true
+matchie(a, matchie.lt(c)); // true
+matchie(b, matchie.lt(c)); // false
+matchie(b, matchie.equals(c)); // FALSE
+matchie(c, matchie.equals(c)); // true
+matchie(b, matchie.matches(c)); // true
+```
+
 ## Utility Functions
 
 `matchie.and(args...)`
@@ -83,6 +100,10 @@ Requires the value to be less than `num`.
 
 `matchie.lte(num)`
 Requires the value to be less than or equal to `num`.
+
+`matchie.matches(matcher)`
+Requires the value to match `matcher`.
+*(For the purposes of convincing `jasmine2-matchie` to use matchie as the equality comparator.)*
 
 `matchie.maybe(val)`
 Requires the value to be undefined, or match `val`.

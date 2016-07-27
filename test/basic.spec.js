@@ -80,4 +80,13 @@ describe('matchie()', function() {
       expect(matchie(5, [5, 0])).to.equal(false);
     });
   });
+
+  describe('.matches()', function() {
+    it('should wrap around matchie', function() {
+      var matches = matchie.matches(matchie.gte(5));
+      expect(matches(3)).to.equal(false);
+      expect(matches(5)).to.equal(true);
+      expect(matches(7)).to.equal(true);
+    });
+  });
 });
